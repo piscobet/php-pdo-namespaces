@@ -1,15 +1,6 @@
 <?php
-
-require_once 'vendor/autoload.php';
-
-use App\Database;
-use User\User;
-
-$pdo = Database::getConnection();
-$user = new User($pdo);
-
-$user->logout();
-
-echo "You have been logged out.";
-header("Location: index.php");
+session_start();
+session_unset();
+session_destroy();
+header('Location: index.php');
 exit;

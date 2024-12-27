@@ -29,15 +29,16 @@ class Emailer {
         $this->mailer->setFrom($_ENV['SMTP_FROM'], $_ENV['SMTP_FROM_NAME']);
     }
 
-    public function sendCartDetails(string $to, Cart $cart): bool {
+    // Modified to accept cart details as a string
+    public function sendCartDetails(string $to, string $cartDetails): bool {
         try {
             $this->mailer->addAddress($to);
-            $this->mailer->Subject = "Your Cart Details";
-            $this->mailer->Body = $cart->getCartDetails();
+            $this->mailer->Subject = "Your Cart Invoice";
+            $this->mailer->Body = $cartDetails;
             $this->mailer->send();
             return true;
         } catch (Exception $e) {
-            echo "Email could not be sent. Error: {$this->mailer->ErrorInfo}\n";
+            error_log("Email could not be sent: " . $e->getMessage());
             return false;
         }
     }

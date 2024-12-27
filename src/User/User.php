@@ -13,18 +13,20 @@ class User {
     }
 
     public function login(string $username, string $password): bool {
-        $stmt = $this->db->prepare("SELECT id, password FROM users WHERE username = :username");
+        $stmt = $this->db->prepare("SELECT id, password, is_admin FROM users WHERE username = :username");
         $stmt->execute([':username' => $username]);
         $user = $stmt->fetch();
-
+    
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $username;
+            $_SESSION['is_admin'] = (bool) $user['is_admin']; // Store admin flag
             return true;
         }
-
+    
         return false;
     }
+    
 
     public function isLoggedIn(): bool {
         return isset($_SESSION['user_id']);

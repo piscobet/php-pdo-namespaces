@@ -3,26 +3,29 @@
 namespace Shop;
 
 class Cart {
-    private array $products = [];
-
-    public function addProduct(Product $product): void {
-        $this->products[] = $product;
-    }
-
-    public function getProducts(): array {
-        return $this->products;
-    }
-
-    public function getTotal(): float {
-        return array_reduce($this->products, fn($sum, $product) => $sum + $product->getPrice(), 0.0);
-    }
-
-    public function getCartDetails(): string {
-        $details = "Cart Details:\n";
-        foreach ($this->products as $product) {
-            $details .= "- " . $product->getName() . " (" . $product->getPrice() . " USD)\n";
+    public function __construct() {
+        if (!isset($_SESSION)) {
+            session_start();
         }
-        $details .= "Total: " . $this->getTotal() . " USD\n";
-        return $details;
+        if (!isset($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
+        }
+    }
+
+    // Add product to cart
+    public function addProduct(int $productId): void {
+        if (!in_array($productId, $_SESSION['cart'])) {
+            $_SESSION['cart'][] = $productId;
+        }
+    }
+
+    // Get all product IDs in the cart
+    public function getProducts(): array {
+        return $_SESSION['cart'];
+    }
+
+    // Clear the cart
+    public function clearCart(): void {
+        $_SESSION['cart'] = [];
     }
 }

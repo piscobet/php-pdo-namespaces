@@ -1,43 +1,44 @@
 <?php
+session_start();
 
-require_once 'vendor/autoload.php';
+$loggedIn = isset($_SESSION['user_id']);
+$isAdmin = $_SESSION['is_admin'] ?? false; // Assume 'is_admin' is set during login for admin users
+?>
 
-use App\Database;
-use User\User;
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Index Page</title>
+</head>
+<body>
+    <h1>Welcome to the Index Page</h1>
 
-try {
-    // Connect to the database
-    $pdo = Database::getConnection();
-    $user = new User($pdo);
+    <?php if ($loggedIn): ?>
+        <p>Welcome, <?= htmlspecialchars($_SESSION['username']); ?>!</p>
+        <a href="logout.php">Logout</a>
+        
+        <!-- User Actions -->
+        <h2>User Section</h2>
+        <ul>
+            <li><a href="add-cart.php">Add Products to Cart</a></li>
+            <li><a href="send-invoice.php">Send Invoice</a></li>
+        </ul>
 
-    // Check if the user is logged in
-    if ($user->isLoggedIn()) {
-        echo "<h1>Welcome, " . htmlspecialchars($_SESSION['username']) . "!</h1>";
-        echo "<a href='logout.php'>Logout</a>";
+        <!-- Admin Actions -->
+        <?php if ($isAdmin): ?>
+            <h2>Admin Section</h2>
+            <ul>
+                <li><a href="add-product.php">Add Product</a></li>
+                <li><a href="get-products.php">View Products</a></li>
+            </ul>
+        <?php endif; ?>
 
-        // Existing functionality: Add products to the cart table
-        // Products to insert
-        $products = [
-            ['product_name' => 'Laptop', 'product_price' => 999.99],
-            ['product_name' => 'Mouse', 'product_price' => 25.50],
-            ['product_name' => 'Keyboard', 'product_price' => 49.99],
-        ];
-
-        // Insert products into the cart table
-        $stmt = $pdo->prepare("INSERT INTO cart (product_name, product_price) VALUES (:product_name, :product_price)");
-        foreach ($products as $product) {
-            $stmt->execute([
-                ':product_name' => $product['product_name'],
-                ':product_price' => $product['product_price'],
-            ]);
-        }
-
-        echo "<p>Products added to the cart table successfully!</p>";
-    } else {
-        // If the user is not logged in, show a login prompt
-        echo "<h1>You are not logged in.</h1>";
-        echo "<a href='user-login.php'>Login here</a>";
-    }
-} catch (PDOException $e) {
-    echo "Failed to add products: " . $e->getMessage();
-}
+    <?php else: ?>
+        <p>You are not logged in.</p>
+        <ul>
+            <li><a href="login.php">Login</a></li>
+            <li><a href="create-account.php">Create Account</a></li>
+        </ul>
+    <?php endif; ?>
+</body>
+</html>
