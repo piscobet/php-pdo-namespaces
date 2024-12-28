@@ -3,6 +3,7 @@
 namespace User;
 
 use PDO;
+use Utils\Geolocator;
 
 class User {
     private PDO $db;
@@ -37,7 +38,8 @@ class User {
         session_destroy();
     }
 
-    public function createUser(string $username, string $password): bool {
+    public function createUser(string $username, string $password, GeoLocator $geolocator): bool {
+        $geoData = $geolocator->getGeoLocation("178.197.223.71");
         // Check if the username already exists
         $stmt = $this->db->prepare("SELECT id FROM users WHERE username = :username");
         $stmt->execute([':username' => $username]);
@@ -49,10 +51,11 @@ class User {
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
     
         // Insert the new user into the database
-        $stmt = $this->db->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
+        $stmt = $this->db->prepare("INSERT INTO users (username, password, country) VALUES (:username, :password, :country)");
         return $stmt->execute([
             ':username' => $username,
             ':password' => $hashedPassword,
+            ':country' => $geoData["country"]
         ]);
     }
     

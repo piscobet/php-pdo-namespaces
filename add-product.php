@@ -3,9 +3,11 @@ require_once 'vendor/autoload.php';
 
 use App\Database;
 use Shop\Shop;
+use Utils\Logger;
 
 $pdo = Database::getConnection();
-$shop = new Shop($pdo);
+$logger = new Logger('app.log');
+$shop = new Shop($pdo, $logger);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? '';

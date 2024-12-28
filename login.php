@@ -4,7 +4,6 @@ require_once 'vendor/autoload.php';
 use App\Database;
 use User\User;
 
-
 //session_start();
 
 $pdo = Database::getConnection();
