@@ -15,6 +15,7 @@
         <ul>
             <li><a href="add-cart.php">Add Products to Cart</a></li>
             <li><a href="send-invoice.php">Send Invoice</a></li>
+            <li><a href="user-edit.php">Edit User</a></li>
         </ul>
 
         <!-- Admin Actions -->
@@ -30,7 +31,7 @@
         <p>You are not logged in.</p>
         <ul>
             <li><a href="login.php">Login</a></li>
-            <li><a href="create-account.php">Create Account</a></li>
+            <li><a href="user-create.php">Create Account</a></li>
         </ul>
     <?php endif; ?>
 </body>

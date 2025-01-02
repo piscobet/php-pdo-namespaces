@@ -58,5 +58,16 @@ class User {
             ':country' => $geoData["country"]
         ]);
     }
+
+
+    public function editUser(int $user_id, string $password): bool {
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        $stmt = $this->db->prepare("UPDATE users SET password = :password WHERE id = :user_id");
+        return $stmt->execute([
+            ':password' => $hashedPassword,
+            ':user_id' => $user_id,
+        ]);
+    }
+    
     
 }
